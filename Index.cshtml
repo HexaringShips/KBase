@@ -1,0 +1,124 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/angular.min.js"></script>
+<script src="~/Module/KPApp.js"></script>
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/main.css" rel="stylesheet" />
+<div ng-app="itemApp" ng-controller="incidentController  as itctrl" class="container"> 
+
+    <div class="col-sm-12">
+        <h4>Search </h4>
+        <input type="text" ng-model="searchText.name" />
+    </div>
+        
+
+
+        <div class="col-sm-12">
+
+           
+            
+            <div> <img src="Content/Images/add.png" style="width:80px;height:80px" alt="image" class="pull-right" ng-click="enableAdd()" />
+            <div ng-if="enableAddNew" class="container" >
+                <h2>Add New Incident</h2>
+                <h4>ID</h4>
+                <input class="text-muted form-control" ng-model="item.id" />
+               <div class="input-group">
+                   
+                   <h4>
+                       Name :
+                   </h4>
+                   <input class="text-primary  form-control " ng-model="item.name" type="text" />
+                   </div> 
+
+                <div class="input-group">
+                    <h4>
+                        Description : :
+                    </h4>
+                    <textarea class="text-primary input-group  form-control" ng-model="item.description"></textarea>
+                </div> 
+                <div class="input-group">
+                    <h4>
+                        Date : :
+                    </h4>
+                    <input ng-model="item.date" class="input-group text-left  form-control" type="text" />
+                </div> 
+                <div class="input-group">
+                    <h4>
+                        Status :
+                    </h4>
+                    <select ng-model="item.status" class="dropdown input-group form-control">
+                        <option selected> please select </option>
+                        <option ng-repeat="d in statusList">
+                            {{d}}
+                        </option>
+                    </select>
+                </div> 
+                <div>
+                    <h4> Image upload</h4>
+                    <input type="file" accept="image/*" image="image"  />{{image.url}}
+                    
+
+                </div>
+               
+              <div>
+                  <button class="btn btn-primary " ng-click="addNew()" value="Add"> Add New</button>
+              </div>
+               
+
+            </div>
+            
+            </div>
+
+
+
+            <h4>Search results</h4>
+         <table>
+             <tr>
+                 <th>
+                     image
+                 </th>
+                 <th>
+                     Name
+                 </th>
+                 <th>
+                     Status
+                 </th>
+                 <th>
+                     Created Date
+                 </th>
+                 <th>
+                     Description
+                 </th>
+                 
+             </tr>
+                <tr ng-repeat="item in data | filter:searchText">
+                    
+                        <td>
+                            <img src="{{item.imagePath}}" style="width:80px;height:80px" alt="image" class="pull-right" />
+                        </td>
+                        <td>
+                            {{item.name}}
+                        </td>
+                        <td>
+                            {{item.status}}
+                        </td>
+                        <td>
+                            {{item.date}}
+                        </td>
+                        <td>
+                            {{item.description}}
+                        </td>
+
+
+                   
+                        
+                   </tr>
+                                        
+
+                </table>
+
+            </div>
+    </div>
