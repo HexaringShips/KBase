@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Knowledge Management Portal - Hexaring Initative</title>
+    <script src="scripts/jquery-2.1.3.min.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+    <script src="scripts/angular.min.js"></script>
+    <link href="Content/Bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <script src="scripts/ui-grid.min.js"></script>
+    <script src="Modules/App.js"></script>
+    <link href="Content/UI-Grid.css" rel="stylesheet" />
+    <style>
+        .btn-add-new {
+            float: left;
+            margin-right: 50%;
+            width: 15%;
+        }
+        .search-form-control {
+            float:left;
+            width:25%;
+        }
+        .btn-search {
+            border-left:0;
+            margin-left: 10px;
+            margin-left: 1%;
+            width: 9%;
+        }
+        .no-left-border {
+            border-left:0px !important;
+        }
+        .title {
+            border-bottom: beige;
+            border-bottom-style: solid;
+            padding-bottom: 15px;
+        }
+         .footerstyle {
+            border-top: beige;
+            border-top-style: solid;
+            padding-top: 15px;
+        }
+         .padBottom{
+             padding-bottom:15px;
+         }
+    </style>
+</head>
+<body>
+    <div ng-app="gridApp" ng-controller="gridController" class="container padBottom">
+
+        
+        <div class="col-md-12 title">
+            <div id="logo" class="pull-left  col-md-3">
+                <img src="Content/Images/logonew.png" alt="Hexaring INC" />
+
+            </div>
+            <div class="pull-left col-md-8">
+                
+                <a href="Home.html" style="text-decoration:none;"><h1>{{title}}</h1></a>
+                
+            </div>
+        </div>
+        
+        
+
+
+
+        <div class="col-md-12">
+            
+            <div ng-if="mode === 'grid'" class="list-group ng-scope" style="margin-top: 20px;">
+                <div class="btn btn-primary btn-add-new" ng-click="addNew()">Add New Incident</div>
+                <input id="txtSearch" class="form-control  ng-pristine ng-untouched ng-valid search-form-control" 
+                       ng-keypress="MakeDefaultButton($event)" ng-model="searchText" placeholder="Search">
+                <button class="btn btn-info" ng-click="SearchContent(searchText)" >Search</button>
+            </div>
+
+
+            <div ng-if="mode === 'add'" class="col-md-12 ">
+                <h3>Add</h3>
+                <div class="col-md-6 ">
+                    Title : <input ng-model="addItem.Title" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    Description : <textarea rows="3" class="form-control" ng-model="addItem.Description"></textarea><br />
+                </div>
+                <div class="col-md-6">
+                    Status : <select ng-model="addItem.Status" class="form-control"><option>New</option><option>Open</option><option>Closed</option></select>
+                </div>
+                <div class="col-md-6">
+                    Created date : {{addItem.CreatedDate }}
+
+                    <input type="date" class="form-control" ng-model="addItem.CreatedDate" /><br />
+                </div>
+                <div class="col-md-6"><br />
+                    Upload files : <input type="file" fileread="addItem.file" />
+
+                </div>
+                <div class="col-md-6">
+                    Keywords : <textarea class="form-control" ng-model="addItem.Keywords"></textarea>
+                </div>
+                <div class="col-md-6" style="margin-top:10px; float:right;">
+                    <div class="btn btn-primary" style="cursor:pointer; width:25%; float:right;" ng-click="Add()">
+                        Save
+                    </div>
+                    <button type="button" class="btn btn-secondary" style="width:25%;float:right; margin-right:2%;" ng-click="Close()">
+                        Cancel
+                    </button>
+                </div>
+
+
+            </div>
+
+            <i class="fa-check"></i>
+            <div ng-if="mode === 'grid'" ui-grid="gridOptions " class="grid"></div>
+
+            <div ng-if="mode === 'edit'" class="col-md-12 ">
+                <div>
+                  <h3>Edit</h3>
+                </div>
+                <div class="col-md-12 " ng-show="false">
+                    ID : <input ng-model="editItem.Id" class="form-control" ng-disabled="true" />
+                </div>
+                <div class="col-md-12 ">
+                    Title : <input ng-model="editItem.Title" class="form-control" />
+                </div>
+                <div class="col-md-12">
+                    Description : <textarea rows="3" class="form-control" ng-model="editItem.Description"></textarea><br />
+                </div>
+                <div class="col-md-12">
+                    Status : <select ng-model="editItem.Status" class="form-control"><option>New</option><option>Open</option><option>Closed</option></select>
+                </div>
+                <div class="col-md-12">
+                    Created Date : {{editItem.CreatedDate }}
+                </div>
+                <div class="col-md-12">
+                    <br />
+
+                    <a ng-if="AttachmentLinkCheck" href="{{attachmenthttppath}}">Download Attachement</a>
+                    <!--<img src= width="100" height="100" alt="{{editItem.AttachmentPath}}" /><br /><br />-->
+                    <br />
+                    <input type="file" fileread="editItem.file" />
+                    <br />
+                </div>
+                <div class="col-md-12">
+                    Keywords : <textarea class="form-control" ng-model="editItem.Keywords"></textarea><br />
+                </div>
+                <div class="col-md-12">
+                    <div class="btn btn-primary" style="cursor:pointer" ng-click="Edit()">
+                        Save
+                    </div>
+                    <div class="btn btn-primary" style="cursor:pointer" ng-click="Close()">
+                        Cancel
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div ng-if="mode === 'review'" class="col-md-12">
+                
+                <h3 class="col-md-12">
+                    Review for ID : <span ng-bind="reviewItem.Id" />
+                </h3>
+                <div class="col-md-12" style="margin-top:15px;">
+                    Title : <span ng-bind="reviewItem.Title" />
+                </div><br /><br />
+                <div class="col-md-12" style="margin-top:15px;">
+                    Status : <span ng-bind="reviewItem.Status"></span> <br />
+                </div><br /><br />
+                <div class="col-md-12" style="margin-top:15px;">
+                    date : <span type="date" ng-bind="reviewItem.CreatedDate" />
+                </div>
+                <div ng-if="AttachmentLinkCheck" class="col-md-12" style="margin-top:15px;">
+                    Attachment:
+                   
+                    
+
+                    <a href="{{attachmenthttppath}}">Download Attachement</a>
+                    
+                    <br />
+                </div>
+                <div class="col-md-12" style="margin-top:15px;">
+                    Description : <span ng-bind="reviewItem.Description"></span>
+                </div>
+
+                <div class="col-md-12" style="margin-top:15px;">
+                    <div class="btn btn-primary" style="cursor:pointer" ng-click="Close()">
+                        Close
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <footer class="container footerstyle">
+        <div class="col-lg-4 pull-right">
+            <small>&copy; Copyright 2017, <a href="hexaring.com">A product of Hexaring INC 2017</a></small>
+           
+        </div>
+        
+    </footer>
+</body>
+</html>
